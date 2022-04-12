@@ -31,3 +31,12 @@ var activated = false;
     console.log(randomProxy);
 })();
 ```
+
+## Dedicated Ports
+
+For Dedicated Ports you need to specify a country number
+
+`0` => `GB`<br>
+`1` => `US`<br>
+`2` => `DE`<br>
+`3` => `CA`
