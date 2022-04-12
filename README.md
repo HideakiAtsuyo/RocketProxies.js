@@ -17,7 +17,7 @@ When you initialize the client =>
 4) Debug Mode(some useless console.log)
 
 ```js
-const https = RocketProxiesClient = new (require('../src/RocketProxies.js'))(false, "127.0.0.1", "KEY", false);
+const https = RocketProxiesClient = new (require('RocketProxies.js'))(false, "127.0.0.1", "KEY", false);
 var activated = false;
 
 (async function(){
