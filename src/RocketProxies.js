@@ -44,7 +44,7 @@ module.exports = class RocketProxies {
     /**
      * Activate the API Key on a user username
      * @param {string} username The user username that will get the key
-     * @returns {Promise<string>}
+     * @returns {Promise<boolean>}
      */
     activateKey(username = null) {
         if (username == null) throw new Error("[RocketProxies] You need to specify a username.");
@@ -53,10 +53,10 @@ module.exports = class RocketProxies {
                 host: APIInfos[0],
                 port: APIInfos[1],
                 path: `/activate?ip=${this.IP}&username=${username}&api_key=${this.Key}`,
-                method: "POST"
+                method: "GET"
             }, function(res) {
                 if (this.Debug) console.log("[RocketProxies] Activation Request Sent !");
-                return resolve(res.statusCode == 200 ? "OK" : "Error or Already Registered !")
+                return resolve(res.statusCode == 200 ? true : false)
             });
             req.write("[RocketProxies] HelloWorld");
             req.end();
@@ -66,7 +66,7 @@ module.exports = class RocketProxies {
     /**
      * Change the authorized IP
      * @param {string} newIP The new IP
-     * @returns {Promise<string>}
+     * @returns {Promise<boolean>}
      */
     changeIP(newIP = null) {
         if (!newIP == null) throw new Error("[RocketProxies] You need to specify a the new IP.");
@@ -76,11 +76,81 @@ module.exports = class RocketProxies {
                 host: APIInfos[0],
                 port: APIInfos[1],
                 path: `/change_ip?ip=${newIP}&api_key=${this.Key}`,
-                method: "POST"
+                method: "GET"
             }, res => {
                 if (this.Debug) console.log("[RocketProxies] Change IP Request Sent !");
-                return resolve(res.statusCode == 200 ? "OK" : "Error or Already Registered !")
+                return resolve(res.statusCode == 200 ? true : false)
                 //return resolve(res);
+            });
+            req.write("[RocketProxies] HelloWorld");
+            req.end();
+        });
+    }
+
+    /**
+     * Return a boolean to know if an IP is blacklisted or no.
+     * @param {string} IP IP
+     * @returns {Promise<boolean>}
+     */
+     isBlacklisted(IP) { //RIP LMAO
+        if (!IP) throw new Error("Specify a IP.");
+
+        return new Promise(async (resolve, reject) => {
+            var req = http.request({
+                host: APIInfos[0],
+                port: APIInfos[1],
+                path: `/is_blacklisted?ip=${IP}`,
+                method: "GET"
+            }, res => {
+                if (this.Debug) console.log("[RocketProxies] IP Blacklist Verification Request Sent !");
+                return resolve(res.statusCode == 200 ? true : false)
+                //return resolve(res);
+            });
+            req.write("[RocketProxies] HelloWorld");
+            req.end();
+        });
+    }
+
+    /**
+     * Return pools list.
+     * @returns {Promise<JSON>}
+     */
+     getPools() {
+        return new Promise(async (resolve, reject) => {
+            var req = http.request({
+                host: APIInfos[0],
+                port: APIInfos[1],
+                path: `/get_pool`,
+                method: "GET"
+            }, res => {
+                if (this.Debug) console.log("[RocketProxies] Pools List Request Sent !");
+                res.on("data", body => {
+                    return resolve(res.statusCode == 200 ? body.toString() : "{}")
+                })
+            });
+            req.write("[RocketProxies] HelloWorld");
+            req.end();
+        });
+    }
+
+    /**
+     * Return stats of a client IP.
+     * @param {string} IP IP
+     * @returns {Promise<JSON>}
+     */
+     getStats(IP) {
+        if (!IP) throw new Error("Specify a IP.");
+        return new Promise(async (resolve, reject) => {
+            var req = http.request({
+                host: APIInfos[0],
+                port: APIInfos[1],
+                path: `/get_stats?IP=${IP}`,
+                method: "GET"
+            }, res => {
+                if (this.Debug) console.log("[RocketProxies] IP Stats Request Sent !");
+                res.on("data", body => {
+                    return resolve(res.statusCode == 200 ? body.toString() : "{}")
+                })
             });
             req.write("[RocketProxies] HelloWorld");
             req.end();
