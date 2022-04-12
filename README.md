@@ -1,5 +1,12 @@
 # RocketProxies.js
 
+[![](https://www.codefactor.io/repository/github/HideakiAtsuyo/RocketProxies.js/badge)](https://www.codefactor.io/repository/github/HideakiAtsuyo/RocketProxies.js)<br>
+
+## Installation
+
+`npm install --save rocketproxies.js`
+
+
 ## Example Usage Only Because I Hate ReadMe
 
 When you initialize the client =>
