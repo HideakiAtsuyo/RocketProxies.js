@@ -1,0 +1,24 @@
+{
+  "name": "rocketproxies.js",
+  "version": "1.0.0",
+  "description": "Bad RocketProxies API Wrapper",
+  "main": "src/RocketProxies.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HideakiAtsuyo/RocketProxies.js.git"
+  },
+  "keywords": [
+    "RocketProxies",
+    "Wrapper",
+    "Node.JS"
+  ],
+  "author": "HideakiAtsuyo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HideakiAtsuyo/RocketProxies.js/issues"
+  },
+  "homepage": "https://github.com/HideakiAtsuyo/RocketProxies.js#readme"
+}
