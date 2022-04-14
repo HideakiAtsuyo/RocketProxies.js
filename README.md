@@ -4,10 +4,8 @@
 
 ## Installation
 
+[![npm package](https://nodei.co/npm/rocketproxies.js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/rocketproxies.js)<br>
 `npm install --save rocketproxies.js`
-
-
-## Example Usage Only Because I Hate ReadMe
 
 When you initialize the client =>
 

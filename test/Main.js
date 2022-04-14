@@ -1,5 +1,5 @@
-const https = RocketProxiesClient = new (require('../src/RocketProxies.js'))(true, "127.0.0.1", "KEY", false);
-var activated = false;
+const https = RocketProxiesClient = new (require('../src/RocketProxies.js'))(false, "127.0.0.1", "KEY", false);
+var activated = true;
 
 (async function(){
     if(!activated){

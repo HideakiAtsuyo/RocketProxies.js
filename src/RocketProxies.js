@@ -1,25 +1,6 @@
 //Shitty code go brrrrrrrrr
-
 const https = require("https"),
-    http = require("http"),
-    APIInfos = [
-        "www.proxies.gay",
-        80,
-        /*Ports*/
-        [
-            /*General*/
-            [1339],
-
-            /*Sticky*/
-            [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009],
-
-            /*Dedicated*/
-            [ /*GB*/ 1340, /*US*/ 1341, /*DE*/ 1342, /*CA*/ 1343],
-
-            /*LoadBalancer*/
-            [2000, 2001, 2002, 2003, 2004, 2005]
-        ]
-    ];
+    http = require("http");
 
 module.exports = class RocketProxies {
     /**
@@ -39,6 +20,24 @@ module.exports = class RocketProxies {
             this.Key = Key;
         }
         this.Debug = Debug;
+        this.APIInfos = [
+            "www.proxies.gay", //API "Domain" (subdomain)
+            80, //API Port
+            /*Ports*/
+            [
+                /*General*/
+                [1339],
+
+                /*Sticky*/
+                [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009],
+
+                /*Dedicated*/
+                [ /*GB*/ 1340, /*US*/ 1341, /*DE*/ 1342, /*CA*/ 1343],
+
+                /*LoadBalancer*/
+                [2000, 2001, 2002, 2003, 2004, 2005]
+            ]
+        ];
     }
 
     /**
@@ -50,13 +49,13 @@ module.exports = class RocketProxies {
         if (username == null) throw new Error("[RocketProxies] You need to specify a username.");
         return new Promise(async (resolve, reject) => {
             var req = http.request({
-                host: APIInfos[0],
-                port: APIInfos[1],
+                host: this.APIInfos[0],
+                port: this.APIInfos[1],
                 path: `/activate?ip=${this.IP}&username=${username}&api_key=${this.Key}`,
                 method: "GET"
-            }, function(res) {
+            }, res => {
                 if (this.Debug) console.log("[RocketProxies] Activation Request Sent !");
-                return resolve(res.statusCode == 200 ? true : false)
+                return resolve(res.statusCode == 200 ? true : false);
             });
             req.write("[RocketProxies] HelloWorld");
             req.end();
@@ -73,14 +72,13 @@ module.exports = class RocketProxies {
         return new Promise(async (resolve, reject) => {
             if (!this.Premium) return resolve("You Need To Be Premium.");
             var req = http.request({
-                host: APIInfos[0],
-                port: APIInfos[1],
+                host: this.APIInfos[0],
+                port: this.APIInfos[1],
                 path: `/change_ip?ip=${newIP}&api_key=${this.Key}`,
                 method: "GET"
             }, res => {
                 if (this.Debug) console.log("[RocketProxies] Change IP Request Sent !");
-                return resolve(res.statusCode == 200 ? true : false)
-                //return resolve(res);
+                return resolve(res.statusCode == 200 ? true : false);
             });
             req.write("[RocketProxies] HelloWorld");
             req.end();
@@ -92,19 +90,18 @@ module.exports = class RocketProxies {
      * @param {string} IP IP
      * @returns {Promise<boolean>}
      */
-     isBlacklisted(IP) { //RIP LMAO
+    isBlacklisted(IP) { //RIP LMAO
         if (!IP) throw new Error("Specify a IP.");
 
         return new Promise(async (resolve, reject) => {
             var req = http.request({
-                host: APIInfos[0],
-                port: APIInfos[1],
+                host: this.APIInfos[0],
+                port: this.APIInfos[1],
                 path: `/is_blacklisted?ip=${IP}`,
                 method: "GET"
             }, res => {
                 if (this.Debug) console.log("[RocketProxies] IP Blacklist Verification Request Sent !");
-                return resolve(res.statusCode == 200 ? true : false)
-                //return resolve(res);
+                return resolve(res.statusCode == 200 ? true : false);
             });
             req.write("[RocketProxies] HelloWorld");
             req.end();
@@ -115,17 +112,17 @@ module.exports = class RocketProxies {
      * Return pools list.
      * @returns {Promise<JSON>}
      */
-     getPools() {
+    getPools() {
         return new Promise(async (resolve, reject) => {
             var req = http.request({
-                host: APIInfos[0],
-                port: APIInfos[1],
+                host: this.APIInfos[0],
+                port: this.APIInfos[1],
                 path: `/get_pool`,
                 method: "GET"
             }, res => {
                 if (this.Debug) console.log("[RocketProxies] Pools List Request Sent !");
                 res.on("data", body => {
-                    return resolve(res.statusCode == 200 ? body.toString() : "{}")
+                    return resolve(res.statusCode == 200 ? body.toString() : "{}");
                 })
             });
             req.write("[RocketProxies] HelloWorld");
@@ -138,18 +135,18 @@ module.exports = class RocketProxies {
      * @param {string} IP IP
      * @returns {Promise<JSON>}
      */
-     getStats(IP) {
+    getStats(IP) {
         if (!IP) throw new Error("Specify a IP.");
         return new Promise(async (resolve, reject) => {
             var req = http.request({
-                host: APIInfos[0],
-                port: APIInfos[1],
+                host: this.APIInfos[0],
+                port: this.APIInfos[1],
                 path: `/get_stats?IP=${IP}`,
                 method: "GET"
             }, res => {
                 if (this.Debug) console.log("[RocketProxies] IP Stats Request Sent !");
                 res.on("data", body => {
-                    return resolve(res.statusCode == 200 ? body.toString() : "{}")
+                    return resolve(res.statusCode == 200 ? body.toString() : "{}");
                 })
             });
             req.write("[RocketProxies] HelloWorld");
@@ -166,7 +163,7 @@ module.exports = class RocketProxies {
     getProxy(type, country = 0) { //RIP LMAO
         if (!type) throw new Error("Specify a Type: General, Sticky, Dedicated, LoadBalancer.");
         var randomPort = 0;
-        switch(type){
+        switch (type) {
             case "General":
                 type = 0;
                 break;
@@ -175,16 +172,14 @@ module.exports = class RocketProxies {
                 break;
             case "Dedicated":
                 if (country < 0) throw new Error("Specify a Country: 0 = GB, 1 = US, 2 = DE, 3 = CA.");
-                type = 2;        
+                type = 2;
                 break;
             case "LoadBalancer":
                 type = 3;
                 break;
         }
-        if (type != 2)
-            randomPort = APIInfos[2][type][Math.floor(Math.random() * APIInfos[2][type].length)];
-        else
-            randomPort = APIInfos[2][type][country];
+
+        randomPort = type != 2 ? this.APIInfos[2][type][Math.floor(Math.random() * this.APIInfos[2][type].length)] : this.APIInfos[2][type][country];
 
         return new Promise(async (resolve, reject) => {
             http.request({
@@ -197,8 +192,7 @@ module.exports = class RocketProxies {
                     host: 'api.ipify.org',
                     socket: socket,
                     agent: false
-                }, function(res) {
-                    res.setEncoding('utf8');
+                }, res => {
                     res.on('data', (IP) => {
                         if (this.Debug) console.log(`[RocketProxies] Got a Proxy: ${IP} !`);
                         return resolve(IP);
