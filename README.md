@@ -10,9 +10,10 @@
 When you initialize the client =>
 
 1) Premium Status(true/false) => false if you don't have a key.
-2) The Authorized IP
-3) Your API Key
-4) Debug Mode(some useless console.log)
+2) Premium Type(1 = 1k/2 = 2k/3 = 3k) => anything if you are not premium.
+3) The Authorized IP
+4) Your API Key
+5) Debug Mode(some useless console.log)
 
 ## Premium & Free
 
@@ -30,16 +31,16 @@ Free:
 ## Example Code
 
 ```js
-const https = RocketProxiesClient = new (require('RocketProxies.js'))(false, "127.0.0.1", "KEY", false);
-var activated = false;
+
+const https = RocketProxiesClient = new (require('../src/RocketProxies.js'))(false/*Premium Status*/, 1/*Premium Type*/, "127.0.0.1"/*Authorized IP*/, "KEY"/*Premium Key*/, false);
+var activated = true; //set to false for first usage or make it better :)
 
 (async function(){
     //Premium: getProxy, Activate, changeIP
     //Free: getProxy, isBlacklisted, getPools
     if(!activated){
         var keyActivated = await RocketProxiesClient.activateKey("Username");
-        if(keyActivated == true){
-            console.log(keyActivated);
+        if(keyActivated){
             activated = true;
         } else {
             console.log("Already Registered or Invalid !");
@@ -58,7 +59,7 @@ var activated = false;
     /*var IPStats = await RocketProxiesClient.getStats("127.0.0.1");
     console.log(IPStats);*/
 
-    var randomProxy = await RocketProxiesClient.getProxy("General"); //getProxy("Dedicated", 1);
+    var randomProxy = await RocketProxiesClient.getProxy("Rotating"); //getProxy("Dedicated", 1);
     console.log(randomProxy);
 })();
 ```

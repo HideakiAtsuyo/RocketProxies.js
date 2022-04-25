@@ -10,10 +10,12 @@ module.exports = class RocketProxies {
      * @param {string} Key The API Key
      * @param {boolean} Debug Want to see some useless stuff ?
      */
-    constructor(Premium = null, IP = null, Key = null, Debug = false) {
+    constructor(Premium = null, PremiumType = null, IP = null, Key = null, Debug = false) {
         if (Premium == null) throw new Error("[RocketProxies] Specify the User Account Premium Status !");
         this.Premium = Premium;
         if (Premium) {
+            if (PremiumType == null) throw new Error("[RocketProxies] Specify the User Account Premium Type(1 = 1k/2 = 2k/3 = 3k) !");
+            this.PremiumType = PremiumType;
             if (IP == null) throw new Error("[RocketProxies] Specify the User Account IP !");
             this.IP = IP;
             if (Key == null) throw new Error("[RocketProxies] Specify the User Account API Key !");
@@ -25,17 +27,14 @@ module.exports = class RocketProxies {
             80, //API Port
             /*Ports*/
             [
-                /*General*/
-                [1339],
-
                 /*Sticky*/
-                [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009],
+                [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009],
 
                 /*Dedicated*/
                 [ /*GB*/ 1340, /*US*/ 1341, /*DE*/ 1342, /*CA*/ 1343],
 
-                /*LoadBalancer*/
-                [2000, 2001, 2002, 2003, 2004, 2005]
+                /*Rotating*/
+                [[3000, 3001, 3002], [4000, 4001, 4002], [5000, 5001, 5002]]
             ]
         ];
     }
@@ -164,26 +163,25 @@ module.exports = class RocketProxies {
         if (!type) throw new Error("Specify a Type: General, Sticky, Dedicated, LoadBalancer.");
         var randomPort = 0;
         switch (type) {
-            case "General":
-                type = 0;
-                break;
             case "Sticky":
-                type = 1;
+                type = 0;
+                randomPort = this.APIInfos[2][type][Math.floor(Math.random() * this.APIInfos[2][type].length)];
                 break;
             case "Dedicated":
                 if (country < 0) throw new Error("Specify a Country: 0 = GB, 1 = US, 2 = DE, 3 = CA.");
-                type = 2;
+                type = 1;
+                randomPort = this.APIInfos[2][type][country];
                 break;
-            case "LoadBalancer":
-                type = 3;
+            case "Rotating":
+                type = 2;
+                var index = this.PremiumType-1;
+                randomPort = this.APIInfos[2][type][index][Math.floor(Math.random() * this.APIInfos[2][type][index].length)];
                 break;
         }
 
-        randomPort = type != 2 ? this.APIInfos[2][type][Math.floor(Math.random() * this.APIInfos[2][type].length)] : this.APIInfos[2][type][country];
-
         return new Promise(async (resolve, reject) => {
             http.request({
-                host: 'proxies.gay',
+                host: '188.34.138.149', //188.34.138.149
                 port: !this.Premium ? 6968 : randomPort,
                 method: 'CONNECT',
                 path: 'api.ipify.org:443',
@@ -195,7 +193,7 @@ module.exports = class RocketProxies {
                 }, res => {
                     res.on('data', (IP) => {
                         if (this.Debug) console.log(`[RocketProxies] Got a Proxy: ${IP} !`);
-                        return resolve(IP);
+                        return resolve(IP.toString());
                     });
                 });
             }).end();
